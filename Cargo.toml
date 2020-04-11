@@ -1,0 +1,23 @@
+[package]
+name = "abbegm"
+version = "0.1.0"
+repository = "https://github.com/robohouse-delft/abbegm-rs"
+authors = [
+	"Maarten de Vries <maarten@de-vri.es>",
+	"RoboHouse <robohouse@robovalley.com>",
+]
+edition = "2018"
+
+[[bin]]
+name = "generate-rust"
+required-features = ["generate-rust"]
+
+[features]
+generate-rust = ["prost-build"]
+
+[dependencies]
+prost = "0.6.1"
+prost-build = { version = "0.6.1", optional = true }
+
+[dev-dependencies]
+assert2 = "0.1.2"

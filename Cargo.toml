@@ -13,7 +13,7 @@ name = "generate-rust"
 required-features = ["generate-rust"]
 
 [features]
-default = ["tokio"]
+default = ["nalgebra", "tokio"]
 generate-rust = ["prost-build"]
 
 [dependencies]

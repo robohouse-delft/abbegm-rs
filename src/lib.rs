@@ -7,3 +7,6 @@ pub mod msg {
 
 #[cfg(feature = "tokio")]
 pub mod tokio_peer;
+
+#[cfg(feature = "nalgebra")]
+pub mod nalgebra;

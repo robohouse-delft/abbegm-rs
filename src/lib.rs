@@ -14,7 +14,7 @@
 //! Sending poses to the robot using EGM may cause it to perform dangerous motions that could lead to damage, injuries or even death.
 //!
 //! Always take appropriate precautions.
-//! Stay out of reach of the robot when it is operational and always keep an emergency stop at hand when testing.
+//! Make sure there are no persons or animals in reach of the robot when it is operational and always keep an emergency stop at hand when testing.
 //!
 //! # Features
 //! Some optional features are available.

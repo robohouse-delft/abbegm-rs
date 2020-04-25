@@ -82,28 +82,30 @@ impl msg::EgmHeader {
 }
 
 impl msg::EgmCartesian {
-	/// Create a new cartesian position from x, y and z components.
-	pub fn new(x: f64, y: f64, z: f64) -> Self {
+	/// Create a cartesian position from x, y and z components in millemeters.
+	pub fn from_mm(x: f64, y: f64, z: f64) -> Self {
 		Self { x, y, z }
 	}
 
-	/// Get the cartesion position as [x, y, z] array.
-	pub fn as_array(&self) -> [f64; 3] {
+	/// Get the cartesion position as [x, y, z] array in millimeters.
+	pub fn as_mm(&self) -> [f64; 3] {
 		[self.x, self.y, self.z]
 	}
 }
 
 impl From<[f64; 3]> for msg::EgmCartesian {
+	/// Create a cartesian position from x, y and z components in millemeters.
 	fn from(other: [f64; 3]) -> Self {
 		let [x, y, z] = other;
-		Self::new(x, y, z)
+		Self::from_mm(x, y, z)
 	}
 }
 
 impl From<(f64, f64, f64)> for msg::EgmCartesian {
+	/// Create a cartesian position from x, y and z components in millemeters.
 	fn from(other: (f64, f64, f64)) -> Self {
 		let (x, y, z) = other;
-		Self::new(x, y, z)
+		Self::from_mm(x, y, z)
 	}
 }
 

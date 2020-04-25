@@ -6,6 +6,8 @@ authors = [
 	"Maarten de Vries <maarten@de-vri.es>",
 	"RoboHouse <robohouse@robovalley.com>",
 ]
+license = "BSD-2-Clause"
+
 edition = "2018"
 
 [[bin]]

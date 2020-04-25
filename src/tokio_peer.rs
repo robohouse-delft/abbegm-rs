@@ -46,9 +46,9 @@ pub struct IncompleteTransmissionError {
 impl EgmPeer {
 	/// Wrap an existing UDP socket in a peer.
 	///
-	/// If you want to use the [`Self::recv`] and [`Self::send`] functions,
+	/// If you want to use the [`EgmPeer::recv`] and [`EgmPeer::send`] functions,
 	/// you should use an already connected socket.
-	/// Otherwise, you can only use [`Self::recv_from`] and [`Self::send_to`].
+	/// Otherwise, you can only use [`EgmPeer::recv_from`] and [`EgmPeer::send_to`].
 	pub fn new(peer: UdpSocket) -> Self {
 		let (rx, tx) = peer.split();
 		Self {
@@ -73,7 +73,7 @@ impl EgmPeer {
 
 	/// Receive a message from the remote address to which the unerlying socket is connected.
 	///
-	/// To use this function, you must pass an already connected socket to [`Self::new`].
+	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn recv(&mut self) -> Result<EgmRobot, ReceiveError> {
 		self.rx.recv().await
@@ -86,7 +86,7 @@ impl EgmPeer {
 
 	/// Send a message to the remote address to which the unerlying socket is connected.
 	///
-	/// To use this function, you must pass an already connected socket to [`Self::new`].
+	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
 		self.tx.send(msg).await
@@ -111,7 +111,7 @@ impl EgmReceiver {
 
 	/// Receive a message from the remote address to which the unerlying socket is connected.
 	///
-	/// To use this function, you must pass an already connected socket to [`Self::new`].
+	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn recv(&mut self) -> Result<EgmRobot, ReceiveError> {
 		let mut buffer = vec![0u8; 256];
@@ -140,7 +140,7 @@ impl EgmSender {
 
 	/// Send a message to the remote address to which the unerlying socket is connected.
 	///
-	/// To use this function, you must pass an already connected socket to [`Self::new`].
+	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
 		let buffer = encode_to_vec(msg)?;

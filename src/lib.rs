@@ -200,6 +200,29 @@ impl std::ops::AddAssign<Duration> for msg::EgmClock {
 	}
 }
 
+#[cfg(test)]
+#[test]
+fn test_add_duration() {
+	use assert2::assert;
+	use msg::EgmClock;
+	assert!(EgmClock::new(1, 500_000) + Duration::from_secs(1) == EgmClock::new(2, 500_000));
+	assert!(EgmClock::new(1, 500_000) + Duration::from_millis(600) == EgmClock::new(2, 100_000));
+	assert!(&EgmClock::new(1, 500_000) + &Duration::from_secs(1) == EgmClock::new(2, 500_000));
+	assert!(&EgmClock::new(1, 500_000) + &Duration::from_millis(600) == EgmClock::new(2, 100_000));
+	assert!(Duration::from_secs(1) + EgmClock::new(1, 500_000)  == EgmClock::new(2, 500_000));
+	assert!(Duration::from_millis(600) + EgmClock::new(1, 500_000)  == EgmClock::new(2, 100_000));
+	assert!(&Duration::from_secs(1) + &EgmClock::new(1, 500_000)  == EgmClock::new(2, 500_000));
+	assert!(&Duration::from_millis(600) + &EgmClock::new(1, 500_000)  == EgmClock::new(2, 100_000));
+
+	let mut clock = EgmClock::new(10, 999_999);
+	clock += Duration::from_micros(1);
+	assert!(clock == EgmClock::new(11, 0));
+	clock += Duration::from_micros(999_999);
+	assert!(clock == EgmClock::new(11, 999_999));
+	clock += Duration::from_micros(2);
+	assert!(clock == EgmClock::new(12, 1));
+}
+
 impl msg::EgmPose {
 	/// Create a new pose from a position and orientation.
 	pub fn new(position: impl Into<msg::EgmCartesian>, orientation: impl Into<msg::EgmQuaternion>) -> Self {

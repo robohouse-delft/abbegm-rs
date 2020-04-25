@@ -22,6 +22,14 @@ Sending poses to the robot using EGM may cause it to perform dangerous motions t
 Always take appropriate precautions.
 Make sure there are no persons or animals in reach of the robot when it is operational and always keep an emergency stop at hand when testing.
 
+## Units and rotation conventions
+Unless specified differently, all distances and positions are in millimeters and all angles are in degrees.
+This may be somewhat odd, but it is what the robot controller expects.
+
+You should use unit quaternions to represent 3D orientations, not Euler angles or roll-pitch-yaw.
+Using unit quaternions avoids the need to specify which Euler angles or roll-pitch-yaw representation is used.
+Quaternions also have the added advantage that you don't need to use degrees.
+
 ## Features
 Some optional features are available.
 Note that all features are enabled by default.

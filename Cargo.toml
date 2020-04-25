@@ -7,6 +7,7 @@ authors = [
 	"RoboHouse <robohouse@robovalley.com>",
 ]
 
+description = "externally guided motion for ABB industrial robots"
 keywords = ["robotics", "abb", "egm", "motion", "externally guided motion"]
 categories = ["science::robotics", "network-programming"]
 repository = "https://github.com/robohouse-delft/abbegm-rs"

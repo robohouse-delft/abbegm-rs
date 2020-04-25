@@ -1,4 +1,8 @@
-# abbegm
+# abbegm [![docs][docs-badge]][docs] [![tests][tests-badge]][tests]
+[docs]: https://docs.rs/abbegm/
+[tests]: https://github.com/robohouse-delft/abbegm-rs/actions?query=workflow%3Atests
+[docs-badge]: https://docs.rs/abbegm/badge.svg
+[tests-badge]: https://github.com/robohouse-delft/abbegm-rs/workflows/CI/badge.svg
 
 This library implements the communication layer of ABB externally-guided motion.
 

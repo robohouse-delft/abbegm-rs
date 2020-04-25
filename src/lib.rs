@@ -22,13 +22,17 @@
 //!
 //! You should use unit quaternions to represent 3D orientations, not Euler angles or roll-pitch-yaw.
 //! Using unit quaternions avoids the need to specify which Euler angles or roll-pitch-yaw representation is used.
-//! Quaternions also have the added advantage that you don't need to use degrees.
+//! Quaternions come with the added advantage that you do not have to use degrees.
 //!
 //! # Features
 //! Some optional features are available.
 //! Note that all features are enabled by default.
-//! They can be disabled by specifying `default-features = false` in your dependency declaration.
-//! Then you can enable only the features you need, to avoid unnecessary dependencies.
+//! To avoid unnecessary dependencies you can disable the default features and select only the ones you need:
+//!
+//! ```toml
+//! [dependencies]
+//! abbegm = { version = "...", default-features = false, features = ["nalgebra"] }
+//! ```
 //!
 //! The available features are:
 //!   * `tokio`: enable the asynchronous peer.

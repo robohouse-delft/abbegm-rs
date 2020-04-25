@@ -12,8 +12,11 @@ In order to use it, the *Externally Guided Motion* option (689-1) must be instal
 EGM can be used to stream positions to a robot controller in either joint space or cartesian space.
 It can also be used to apply corrections to a pre-programmed trajectory.
 
-To communicate with a robot controller in blocking mode, use `sync_peer::EgmPeer`.
-Use `tokio_peer::EgmPeer` if you want to communicate with a robot controller asynchronously.
+To communicate with a robot controller in blocking mode, use [`sync_peer::EgmPeer`][sync_peer].
+Use [`tokio_peer::EgmPeer`][tokio_peer] if you want to communicate with a robot controller asynchronously.
+
+[sync_peer]: https://docs.rs/abbegm/latest/abbegm/sync_peer/struct.EgmPeer.html
+[tokio_peer]: https://docs.rs/abbegm/latest/abbegm/tokio_peer/struct.EgmPeer.html
 
 ## Warning
 Industrial robots are dangerous machines.
@@ -28,13 +31,17 @@ This may be somewhat odd, but it is what the robot controller expects.
 
 You should use unit quaternions to represent 3D orientations, not Euler angles or roll-pitch-yaw.
 Using unit quaternions avoids the need to specify which Euler angles or roll-pitch-yaw representation is used.
-Quaternions also have the added advantage that you don't need to use degrees.
+Quaternions come with the added advantage that you do not have to use degrees.
 
 ## Features
 Some optional features are available.
 Note that all features are enabled by default.
-They can be disabled by specifying `default-features = false` in your dependency declaration.
-Then you can enable only the features you need, to avoid unnecessary dependencies.
+To avoid unnecessary dependencies you can disable the default features and select only the ones you need:
+
+```toml
+[dependencies]
+abbegm = { version = "...", default-features = false, features = ["nalgebra"] }
+```
 
 The available features are:
   * `tokio`: enable the asynchronous peer.
@@ -43,7 +50,8 @@ The available features are:
 ## Re-generating protobuf messages.
 
 The Rust code for the protobuf messages are generated using [`prost`](https://crates.io/crates/prost).
-To re-generate the messages, run the following command:
+Normal users do not need to worry about this, but during development it may be necessary to re-generate the messages.
+To do so, run the following command:
 
 ```sh
 cargo run --features generate-rust --bin generate-rust

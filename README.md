@@ -10,7 +10,14 @@ It can also be used to apply corrections to a pre-programmed trajectory.
 
 A blocking peer is available as `sync_peer::EgmPeer`.
 
-## Features:
+## Warning
+Industrial robots are dangerous machines.
+Sending poses to the robot using EGM may cause it to perform dangerous motions that could lead to damage, injuries or even death.
+
+Always take appropriate precautions.
+Stay out of reach of the robot when it is operational and always keep an emergency stop at hand when testing.
+
+## Features
 Some optional features are available.
 Note that all features are enabled by default.
 They can be disabled by specifying `default-features = false` in your dependency declaration.

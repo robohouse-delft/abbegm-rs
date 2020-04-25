@@ -109,7 +109,7 @@ impl TryFrom<&msg::EgmPose> for nalgebra::Isometry3<f64> {
 	type Error = TryFromEgmPoseError;
 
 	fn try_from(other: &msg::EgmPose) -> Result<Self, Self::Error> {
-		let position    = other.pos.as_ref().ok_or(Self::Error::MissingPosition)?;
+		let position = other.pos.as_ref().ok_or(Self::Error::MissingPosition)?;
 		let orientation = other.orient.as_ref().ok_or(Self::Error::MissingOrientation)?;
 
 		Ok(nalgebra::Isometry3::from_parts(

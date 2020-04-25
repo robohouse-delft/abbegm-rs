@@ -3,10 +3,10 @@ use std::net::SocketAddr;
 use prost::Message;
 use std::net::UdpSocket;
 
+use crate::msg::EgmRobot;
+use crate::msg::EgmSensor;
 use crate::ReceiveError;
 use crate::SendError;
-use crate::msg::EgmSensor;
-use crate::msg::EgmRobot;
 
 #[derive(Debug)]
 /// Blocking EGM peer for sending and receiving messages over UDP.
@@ -58,7 +58,7 @@ impl EgmPeer {
 	}
 
 	/// Receive a message from any remote address.
-	pub fn recv_from(&mut self, ) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
+	pub fn recv_from(&mut self) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
 		let mut buffer = vec![0u8; 1024];
 		let (bytes_received, sender) = self.socket.recv_from(&mut buffer)?;
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))

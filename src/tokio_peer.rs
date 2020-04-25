@@ -1,13 +1,13 @@
 use std::net::SocketAddr;
 
 use prost::Message;
-use tokio::net::UdpSocket;
 use tokio::net::udp;
+use tokio::net::UdpSocket;
 
-use crate::ReceiveError;
-use crate::SendError;
 use crate::msg::EgmRobot;
 use crate::msg::EgmSensor;
+use crate::ReceiveError;
+use crate::SendError;
 
 #[derive(Debug)]
 /// Asynchronous EGM peer capable of sending and receiving messages.
@@ -79,7 +79,7 @@ impl EgmPeer {
 	}
 
 	/// Receive a message from any remote address.
-	pub async fn recv_from(&mut self, ) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
+	pub async fn recv_from(&mut self) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
 		let mut buffer = vec![0u8; 1024];
 		let (bytes_received, sender) = self.socket.recv_from(&mut buffer).await?;
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))

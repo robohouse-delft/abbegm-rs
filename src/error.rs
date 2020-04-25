@@ -3,10 +3,7 @@ pub fn check_transfer(transferred: usize, total: usize) -> Result<(), Incomplete
 	if transferred == total {
 		Ok(())
 	} else {
-		Err(IncompleteTransmissionError {
-			transferred,
-			total
-		})
+		Err(IncompleteTransmissionError { transferred, total })
 	}
 }
 
@@ -94,8 +91,12 @@ impl std::fmt::Display for SendError {
 }
 
 impl std::fmt::Display for IncompleteTransmissionError {
+	#[rustfmt::skip]
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		write!(f, "incomplete transmission: transferred only {} of {} bytes", self.transferred, self.total)
+		write!(f, "incomplete transmission: transferred only {} of {} bytes",
+			self.transferred,
+			self.total
+		)
 	}
 }
 

@@ -238,7 +238,7 @@ fn test_add_duration() {
 }
 
 impl msg::EgmPose {
-	/// Create a new pose from a position and orientation.
+	/// Create a new 6-DOF pose from a position and orientation.
 	pub fn new(position: impl Into<msg::EgmCartesian>, orientation: impl Into<msg::EgmQuaternion>) -> Self {
 		Self {
 			pos: Some(position.into()),
@@ -308,8 +308,8 @@ impl msg::EgmPlanned {
 		}
 	}
 
-	/// Create a new cartesian target.
-	pub fn cartesian(pose: impl Into<msg::EgmPose>, time: impl Into<msg::EgmClock>) -> Self {
+	/// Create a new 6-DOF pose target.
+	pub fn pose(pose: impl Into<msg::EgmPose>, time: impl Into<msg::EgmClock>) -> Self {
 		Self {
 			time: Some(time.into()),
 			cartesian: Some(pose.into()),
@@ -343,15 +343,15 @@ impl msg::EgmSensor {
 		}
 	}
 
-	/// Create a sensor message containing a cartesian target.
+	/// Create a sensor message containing a 6-DOF pose target.
 	///
 	/// The header timestamp is created from the `time` parameter.
-	pub fn cartesian_target(sequence_number: u32, pose: impl Into<msg::EgmPose>, time: impl Into<msg::EgmClock>) -> Self {
+	pub fn pose_target(sequence_number: u32, pose: impl Into<msg::EgmPose>, time: impl Into<msg::EgmClock>) -> Self {
 		let time = time.into();
 		let timestamp_ms = (time.sec.wrapping_mul(1000) + time.usec / 1000) as u32;
 		Self {
 			header: Some(msg::EgmHeader::correction(sequence_number, timestamp_ms)),
-			planned: Some(msg::EgmPlanned::cartesian(pose, time)),
+			planned: Some(msg::EgmPlanned::pose(pose, time)),
 			speed_ref: None,
 		}
 	}
@@ -380,7 +380,7 @@ impl msg::EgmRobot {
 		Some(&self.feed_back.as_ref()?.joints.as_ref()?.joints)
 	}
 
-	pub fn feedback_cartesion(&self) -> Option<&msg::EgmPose> {
+	pub fn feedback_pose(&self) -> Option<&msg::EgmPose> {
 		self.feed_back.as_ref()?.cartesian.as_ref()
 	}
 
@@ -396,7 +396,7 @@ impl msg::EgmRobot {
 		Some(&self.planned.as_ref()?.joints.as_ref()?.joints)
 	}
 
-	pub fn planned_cartesion(&self) -> Option<&msg::EgmPose> {
+	pub fn planned_pose(&self) -> Option<&msg::EgmPose> {
 		self.planned.as_ref()?.cartesian.as_ref()
 	}
 

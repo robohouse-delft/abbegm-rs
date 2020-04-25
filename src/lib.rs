@@ -150,6 +150,8 @@ impl msg::EgmClock {
 	}
 }
 
+impl Copy for msg::EgmClock {}
+
 impl std::ops::Add<&Duration> for &msg::EgmClock {
 	type Output = msg::EgmClock;
 

@@ -11,6 +11,7 @@ edition = "2018"
 [[bin]]
 name = "generate-rust"
 required-features = ["generate-rust"]
+path = "proto/generate-rust.rs"
 
 [features]
 default = ["nalgebra", "tokio"]

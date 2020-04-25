@@ -17,8 +17,9 @@ pub mod sync_peer;
 #[cfg(feature = "tokio")]
 pub mod tokio_peer;
 
+/// Conversions to/from nalgebra types.
 #[cfg(feature = "nalgebra")]
-pub mod nalgebra;
+mod nalgebra;
 
 impl msg::EgmRobot {
 	pub fn sequence_number(&self) -> Option<u32> {

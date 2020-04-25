@@ -40,7 +40,7 @@ impl From<&msg::EgmCartesian> for nalgebra::Vector3<f64> {
 
 impl From<&nalgebra::Vector3<f64>> for msg::EgmCartesian {
 	fn from(other: &nalgebra::Vector3<f64>) -> Self {
-		Self::new(other.x, other.y, other.z)
+		Self::from_mm(other.x, other.y, other.z)
 	}
 }
 

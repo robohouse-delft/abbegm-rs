@@ -1,3 +1,7 @@
+v0.1.2
+ * Add functions to create EGM messages.
+ * Implement addition for `EgmClock` and `Duration`.
+
 v0.1.1
  * Tweak warning message regarding safety precautions.
  * Add readme to cargo manifest.

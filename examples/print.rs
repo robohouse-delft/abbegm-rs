@@ -15,20 +15,16 @@ struct Options {
 }
 
 async fn do_main(options: Options) -> Result<(), String> {
-	let mut peer = EgmPeer::bind(&options.bind)
-		.await
+	let mut peer = EgmPeer::bind(&options.bind).await
 		.map_err(|e| format!("failed to bind to local enpoint {}: {}", options.bind, e))?;
 
-	let local_address = peer
-		.socket()
-		.local_addr()
+	let local_address = peer.socket().local_addr()
 		.map_err(|e| format!("failed to get local socket address: {}", e))?;
+
 	eprintln!("Listening for messages on {}", local_address);
 
 	loop {
-		let (state, address) = peer
-			.recv_from()
-			.await
+		let (state, address) = peer.recv_from().await
 			.map_err(|e| format!("failed to receive robot state: {}", e))?;
 		println!("Received EGM message from {}:\n{:#?}", address, state);
 	}

@@ -10,6 +10,7 @@ pub mod msg {
 	pub use super::generated::*;
 }
 
+/// Asynchronous EGM peer using `tokio`.
 #[cfg(feature = "tokio")]
 pub mod tokio_peer;
 

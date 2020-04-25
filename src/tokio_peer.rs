@@ -57,6 +57,14 @@ impl EgmPeer {
 		}
 	}
 
+	/// Create an EGM peer on a newly bound UDP socket.
+	///
+	/// The socket will not be connected to a remote peer,
+	/// so you can only use [`EgmPeer::recv_from`] and [`EgmPeer::send_to`].
+	pub async fn bind(addrs: impl tokio::net::ToSocketAddrs) -> std::io::Result<Self> {
+		Ok(Self::new(UdpSocket::bind(addrs).await?))
+	}
+
 	/// Consume self and return the original socket.
 	pub fn into_inert(self) -> UdpSocket {
 		let rx = self.rx.into_inner();

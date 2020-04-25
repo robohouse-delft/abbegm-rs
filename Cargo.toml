@@ -1,12 +1,16 @@
 [package]
 name = "abbegm"
 version = "0.1.0"
-repository = "https://github.com/robohouse-delft/abbegm-rs"
+license = "BSD-2-Clause"
 authors = [
 	"Maarten de Vries <maarten@de-vri.es>",
 	"RoboHouse <robohouse@robovalley.com>",
 ]
-license = "BSD-2-Clause"
+
+keywords = ["robotics", "abb", "egm", "motion", "externally guided motion"]
+categories = ["science::robotics", "network-programming"]
+repository = "https://github.com/robohouse-delft/abbegm-rs"
+documentation = "https://docs.rs/abbegm"
 
 edition = "2018"
 

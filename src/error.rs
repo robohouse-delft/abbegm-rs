@@ -1,4 +1,4 @@
-/// Check if a whole buffer was sucessfully transferred.
+/// Check if a whole buffer was successfully transferred.
 pub fn check_transfer(transferred: usize, total: usize) -> Result<(), IncompleteTransmissionError> {
 	if transferred == total {
 		Ok(())
@@ -19,12 +19,14 @@ fn test_check_transfer() {
 	assert!(let Ok(()) = check_transfer(3, 3));
 }
 
+/// Error that may occur when receiving a message.
 #[derive(Debug)]
 pub enum ReceiveError {
 	Io(std::io::Error),
 	Decode(prost::DecodeError),
 }
 
+/// Error that may occur when sending a message.
 #[derive(Debug)]
 pub enum SendError {
 	Io(std::io::Error),
@@ -32,9 +34,13 @@ pub enum SendError {
 	IncompleteTransmission(IncompleteTransmissionError),
 }
 
+/// Error indicating that a message was only partially transmitted.
 #[derive(Clone, Debug)]
 pub struct IncompleteTransmissionError {
+	/// The number of bytes that were transmitted.
 	pub transferred: usize,
+
+	/// The total number of bytes that should have been transmitted.
 	pub total: usize,
 }
 

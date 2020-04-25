@@ -40,11 +40,7 @@ impl From<&msg::EgmCartesian> for nalgebra::Vector3<f64> {
 
 impl From<&nalgebra::Vector3<f64>> for msg::EgmCartesian {
 	fn from(other: &nalgebra::Vector3<f64>) -> Self {
-		Self {
-			x: other.x,
-			y: other.y,
-			z: other.z,
-		}
+		Self::new(other.x, other.y, other.z)
 	}
 }
 
@@ -60,12 +56,7 @@ impl From<&msg::EgmQuaternion> for nalgebra::Quaternion<f64> {
 
 impl From<&nalgebra::Quaternion<f64>> for msg::EgmQuaternion {
 	fn from(other: &nalgebra::Quaternion<f64>) -> Self {
-		Self {
-			u0: other.scalar(),
-			u1: other.imag().x,
-			u2: other.imag().y,
-			u3: other.imag().z,
-		}
+		Self::from_wxyz(other.scalar(), other.imag().x, other.imag().y, other.imag().z)
 	}
 }
 
@@ -121,11 +112,7 @@ impl TryFrom<&msg::EgmPose> for nalgebra::Isometry3<f64> {
 
 impl From<&nalgebra::Isometry3<f64>> for msg::EgmPose {
 	fn from(other: &nalgebra::Isometry3<f64>) -> Self {
-		Self {
-			pos: Some(other.translation.vector.into()),
-			orient: Some(other.rotation.into()),
-			euler: None,
-		}
+		Self::new(other.translation.vector, other.rotation)
 	}
 }
 

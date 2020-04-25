@@ -1,12 +1,13 @@
 //! This library implements the communication layer of ABB externally-guided motion.
 //!
 //! Externally-guided motion (or EGM) is an interface for ABB robots to allow smooth control of a robotic arm from an external PC.
-//! In order to use it, the *Externally Guided Motion* option (689-1) must be installed on the robot.
+//! In order to use it, the *Externally Guided Motion* option (689-1) must be installed on the robot controller.
 //!
-//! EGM can be used to stream positions to a robot in either joint space or cartesian space.
+//! EGM can be used to stream positions to a robot controller in either joint space or cartesian space.
 //! It can also be used to apply corrections to a pre-programmed trajectory.
 //!
-//! A blocking peer is available as [`sync_peer::EgmPeer`].
+//! To communicate with a robot controller in blocking mode, use [`sync_peer::EgmPeer`].
+//! Use [`tokio_peer::EgmPeer`] if you want to communicate with a robot controller asynchronously.
 //!
 //! # Warning
 //! Industrial robots are dangerous machines.
@@ -22,8 +23,8 @@
 //! Then you can enable only the features you need, to avoid unnecessary dependencies.
 //!
 //! The available features are:
-//!   * `tokio`: enables an asynchronous peer: [`tokio_peer::EgmPeer`].
-//!   * `nalgebra`: implements conversions to/from `nalgebra` types.
+//!   * `tokio`: enable the asynchronous peer.
+//!   * `nalgebra`: implement conversions between `nalgebra` types and EGM messages.
 
 mod error;
 pub use error::IncompleteTransmissionError;

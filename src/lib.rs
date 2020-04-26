@@ -272,7 +272,7 @@ impl From<&[f64]> for msg::EgmJoints {
 impl From<&[f64; 6]> for msg::EgmJoints {
 	/// Create a new joint list from an array of joint values in degrees.
 	fn from(other: &[f64; 6]) -> Self {
-		Self::from_degrees(*other)
+		Self::from_degrees(&other[..])
 	}
 }
 

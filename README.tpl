@@ -2,7 +2,7 @@
 [docs]: https://docs.rs/abbegm/
 [tests]: https://github.com/robohouse-delft/abbegm-rs/actions?query=workflow%3Atests
 [docs-badge]: https://docs.rs/abbegm/badge.svg
-[tests-badge]: https://github.com/robohouse-delft/abbegm-rs/workflows/CI/badge.svg
+[tests-badge]: https://github.com/robohouse-delft/abbegm-rs/workflows/tests/badge.svg
 
 {{readme}}
 

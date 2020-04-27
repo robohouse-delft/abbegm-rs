@@ -1,7 +1,8 @@
-v0.1.2
+v0.2.0
   * Add functions to create EGM messages.
   * Implement addition for `EgmClock` and `Duration`.
   * Document which units are used in the library overview.
+  * Rename `motors_enabled` and `rapid_running` accessors.
 
 v0.1.1
   * Tweak warning message regarding safety precautions.

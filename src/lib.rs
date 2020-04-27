@@ -424,7 +424,7 @@ impl msg::EgmRobot {
 		self.planned.as_ref()?.time.clone()
 	}
 
-	pub fn is_motors_on(&self) -> Option<bool> {
+	pub fn motors_enabled(&self) -> Option<bool> {
 		use msg::egm_motor_state::MotorStateType;
 		match self.motor_state.as_ref()?.state() {
 			MotorStateType::MotorsUndefined => None,
@@ -433,7 +433,7 @@ impl msg::EgmRobot {
 		}
 	}
 
-	pub fn is_rapid_running(&self) -> Option<bool> {
+	pub fn rapid_running(&self) -> Option<bool> {
 		use msg::egm_rapid_ctrl_exec_state::RapidCtrlExecStateType;
 		match self.rapid_exec_state.as_ref()?.state() {
 			RapidCtrlExecStateType::RapidUndefined => None,

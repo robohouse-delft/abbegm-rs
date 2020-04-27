@@ -248,6 +248,22 @@ impl msg::EgmPose {
 	}
 }
 
+impl msg::EgmCartesianSpeed {
+	/// Create a cartesian speed from linear velocity in mm/s and rotational velocity in degrees/s.
+	pub fn from_mm_and_degrees(linear: [f64; 3], rotational: [f64; 3]) -> Self {
+		Self {
+			value: vec![
+				linear[0],
+				linear[1],
+				linear[2],
+				rotational[0],
+				rotational[1],
+				rotational[2],
+			],
+		}
+	}
+}
+
 impl msg::EgmJoints {
 	/// Create a new joint list from a vector of joint values in degrees.
 	pub fn from_degrees(joints: impl Into<Vec<f64>>) -> Self {

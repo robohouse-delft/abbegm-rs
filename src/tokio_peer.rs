@@ -45,6 +45,20 @@ impl EgmPeer {
 		Ok(Self::new(UdpSocket::bind(addrs).await?))
 	}
 
+	/// Synchronously create an EGM peer on a newly bound UDP socket.
+	///
+	/// This function allows you to create the peer synchronously,
+	/// but use an asynchronous API for communicating with the robot.
+	/// This can be useful if you want to perform initialization of your application synchronously.
+	///
+	/// The socket will not be connected to a remote peer,
+	/// so you can only use [`EgmPeer::recv_from`] and [`EgmPeer::send_to`].
+	pub fn bind_sync(addrs: impl std::net::ToSocketAddrs) -> std::io::Result<Self> {
+		let socket = std::net::UdpSocket::bind(addrs)?;
+		let socket = tokio::net::UdpSocket::from_std(socket)?;
+		Ok(Self::new(socket))
+	}
+
 	/// Get a shared reference to the inner socket.
 	pub fn socket(&self) -> &UdpSocket {
 		&self.socket

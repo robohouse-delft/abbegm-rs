@@ -1,3 +1,6 @@
+v0.2.1
+  * Add function to create a `tokio_peer::EgmPeer` synchronously.
+
 v0.2.0
   * Add functions to create EGM messages.
   * Implement addition for `EgmClock` and `Duration`.

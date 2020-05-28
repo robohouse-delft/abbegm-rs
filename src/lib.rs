@@ -162,6 +162,24 @@ impl msg::EgmClock {
 	pub fn elapsed_since_epoch(&self) -> Duration {
 		Duration::new(self.sec, (self.usec) as u32 * 1000)
 	}
+
+	/// Get the elapsed time as milliseconds since the epoch.
+	pub fn as_timestamp_ms(&self) -> u32 {
+		self.sec.wrapping_mul(1_000).wrapping_add(self.usec / 1_000) as u32
+	}
+}
+
+#[cfg(test)]
+#[test]
+fn test_clock_to_timestampc() {
+	use assert2::assert;
+	use msg::EgmClock;
+
+	assert!(EgmClock::new(0, 0).as_timestamp_ms() == 0);
+	assert!(EgmClock::new(1, 0).as_timestamp_ms() == 1_000);
+	assert!(EgmClock::new(2, 123).as_timestamp_ms() == 2_000);
+	assert!(EgmClock::new(3, 987_654).as_timestamp_ms() == 3_987);
+	assert!(EgmClock::new(4, 2_345_000).as_timestamp_ms() == 6_345);
 }
 
 impl Copy for msg::EgmClock {}
@@ -351,9 +369,8 @@ impl msg::EgmSensor {
 	/// The header timestamp is created from the `time` parameter.
 	pub fn joint_target(sequence_number: u32, joints: impl Into<msg::EgmJoints>, time: impl Into<msg::EgmClock>) -> Self {
 		let time = time.into();
-		let timestamp_ms = (time.sec.wrapping_mul(1000) + time.usec / 1000) as u32;
 		Self {
-			header: Some(msg::EgmHeader::correction(sequence_number, timestamp_ms)),
+			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
 			planned: Some(msg::EgmPlanned::joints(joints, time)),
 			speed_ref: None,
 		}
@@ -364,9 +381,8 @@ impl msg::EgmSensor {
 	/// The header timestamp is created from the `time` parameter.
 	pub fn pose_target(sequence_number: u32, pose: impl Into<msg::EgmPose>, time: impl Into<msg::EgmClock>) -> Self {
 		let time = time.into();
-		let timestamp_ms = (time.sec.wrapping_mul(1000) + time.usec / 1000) as u32;
 		Self {
-			header: Some(msg::EgmHeader::correction(sequence_number, timestamp_ms)),
+			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
 			planned: Some(msg::EgmPlanned::pose(pose, time)),
 			speed_ref: None,
 		}

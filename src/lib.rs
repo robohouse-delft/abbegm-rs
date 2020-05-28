@@ -281,6 +281,24 @@ impl msg::EgmPose {
 	}
 }
 
+impl msg::EgmSpeedRef {
+	pub fn joints(joints: impl Into<msg::EgmJoints>) -> Self {
+		Self {
+			joints: Some(joints.into()),
+			external_joints: None,
+			cartesians: None,
+		}
+	}
+
+	pub fn cartesian(cartesian: impl Into<msg::EgmCartesianSpeed>) -> Self {
+		Self {
+			cartesians: Some(cartesian.into()),
+			joints: None,
+			external_joints: None,
+		}
+	}
+}
+
 impl msg::EgmCartesianSpeed {
 	/// Create a cartesian speed from linear velocity in mm/s and rotational velocity in degrees/s.
 	pub fn from_mm_and_degrees(linear: [f64; 3], rotational: [f64; 3]) -> Self {
@@ -379,7 +397,7 @@ impl msg::EgmPathCorr {
 }
 
 impl msg::EgmSensor {
-	/// Create a sensor message containing a joint target.
+	/// Create a sensor message containing a joint space target.
 	///
 	/// The header timestamp is created from the `time` parameter.
 	pub fn joint_target(sequence_number: u32, joints: impl Into<msg::EgmJoints>, time: impl Into<msg::EgmClock>) -> Self {
@@ -388,6 +406,18 @@ impl msg::EgmSensor {
 			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
 			planned: Some(msg::EgmPlanned::joints(joints, time)),
 			speed_ref: None,
+		}
+	}
+
+	/// Create a sensor message containing a joint space target and a joint space speed reference.
+	///
+	/// The header timestamp is created from the `time` parameter.
+	pub fn joint_target_with_speed(sequence_number: u32, joints: impl Into<msg::EgmJoints>, speed: impl Into<msg::EgmJoints>, time: impl Into<msg::EgmClock>) -> Self {
+		let time = time.into();
+		Self {
+			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
+			planned: Some(msg::EgmPlanned::joints(joints, time)),
+			speed_ref: Some(msg::EgmSpeedRef::joints(speed)),
 		}
 	}
 
@@ -400,6 +430,18 @@ impl msg::EgmSensor {
 			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
 			planned: Some(msg::EgmPlanned::pose(pose, time)),
 			speed_ref: None,
+		}
+	}
+
+	/// Create a sensor message containing a 6-DOF pose target with a cartesian speed reference.
+	///
+	/// The header timestamp is created from the `time` parameter.
+	pub fn pose_target_with_speed(sequence_number: u32, pose: impl Into<msg::EgmPose>, speed: impl Into<msg::EgmCartesianSpeed>, time: impl Into<msg::EgmClock>) -> Self {
+		let time = time.into();
+		Self {
+			header: Some(msg::EgmHeader::correction(sequence_number, time.as_timestamp_ms())),
+			planned: Some(msg::EgmPlanned::pose(pose, time)),
+			speed_ref: Some(msg::EgmSpeedRef::cartesian(speed)),
 		}
 	}
 }

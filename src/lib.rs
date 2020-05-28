@@ -160,13 +160,28 @@ impl msg::EgmClock {
 	///
 	/// Note that the duration will have only a microsecond resolution.
 	pub fn elapsed_since_epoch(&self) -> Duration {
-		Duration::new(self.sec, (self.usec) as u32 * 1000)
+		let secs = self.sec + self.usec / 1_000_000;
+		let nanos = (self.usec % 1_000_000) as u32 * 1_000;
+		Duration::new(secs, nanos)
 	}
 
 	/// Get the elapsed time as milliseconds since the epoch.
 	pub fn as_timestamp_ms(&self) -> u32 {
 		self.sec.wrapping_mul(1_000).wrapping_add(self.usec / 1_000) as u32
 	}
+}
+
+#[cfg(test)]
+#[test]
+fn test_clock_to_duration() {
+	use assert2::assert;
+	use msg::EgmClock;
+
+	assert!(EgmClock::new(0, 0).elapsed_since_epoch() == Duration::new(0, 0));
+	assert!(EgmClock::new(1, 0).elapsed_since_epoch() == Duration::new(1, 0));
+	assert!(EgmClock::new(2, 123).elapsed_since_epoch() == Duration::new(2, 000_123_000));
+	assert!(EgmClock::new(3, 987_654).elapsed_since_epoch() == Duration::new(3, 987_654_000));
+	assert!(EgmClock::new(4, 2_345_000).elapsed_since_epoch() == Duration::new(6, 345_000_000));
 }
 
 #[cfg(test)]

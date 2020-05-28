@@ -2,6 +2,7 @@ v0.2.2
   * Add constructors to create message with speed reference.
   * Expose function to get a millseconds timestamp from `EgmClock`.
   * Deal with `EgmClock` microseconds overflowing into seconds when converting to Duration.
+  * Move code generation program to separate crate.
 
 v0.2.1
   * Add function to create a `tokio_peer::EgmPeer` synchronously.

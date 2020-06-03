@@ -1,3 +1,6 @@
+v0.3.0
+  * Remove angular velocity from `EgmCartesianSpeed` constructor.
+
 v0.2.2
   * Add constructors to create message with speed reference.
   * Expose function to get a millseconds timestamp from `EgmClock`.

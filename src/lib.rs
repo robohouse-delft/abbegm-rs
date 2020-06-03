@@ -300,18 +300,9 @@ impl msg::EgmSpeedRef {
 }
 
 impl msg::EgmCartesianSpeed {
-	/// Create a cartesian speed from linear velocity in mm/s and rotational velocity in degrees/s.
-	pub fn from_mm_and_degrees(linear: [f64; 3], rotational: [f64; 3]) -> Self {
-		Self {
-			value: vec![
-				linear[0],
-				linear[1],
-				linear[2],
-				rotational[0],
-				rotational[1],
-				rotational[2],
-			],
-		}
+	/// Create a cartesian speed from linear velocity in mm/s.
+	pub fn from_xyz_mm(x: f64, y: f64, z: f64) -> Self {
+		Self { value: vec![x, y, z] }
 	}
 }
 

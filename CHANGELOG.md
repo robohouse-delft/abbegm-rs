@@ -1,5 +1,6 @@
 v0.3.0
   * Remove angular velocity from `EgmCartesianSpeed` constructor.
+  * Add a few more `From<...>` implementations.
 
 v0.2.2
   * Add constructors to create message with speed reference.

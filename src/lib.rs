@@ -113,6 +113,14 @@ impl From<[f64; 3]> for msg::EgmCartesian {
 	}
 }
 
+impl From<&[f64; 3]> for msg::EgmCartesian {
+	/// Create a cartesian position from x, y and z components in millemeters.
+	fn from(other: &[f64; 3]) -> Self {
+		let &[x, y, z] = other;
+		Self::from_mm(x, y, z)
+	}
+}
+
 impl From<(f64, f64, f64)> for msg::EgmCartesian {
 	/// Create a cartesian position from x, y and z components in millemeters.
 	fn from(other: (f64, f64, f64)) -> Self {
@@ -306,6 +314,27 @@ impl msg::EgmCartesianSpeed {
 	}
 }
 
+impl From<[f64; 3]> for msg::EgmCartesianSpeed {
+	fn from(other: [f64; 3]) -> Self {
+		let [x, y, z] = other;
+		Self::from_xyz_mm(x, y, z)
+	}
+}
+
+impl From<&[f64; 3]> for msg::EgmCartesianSpeed {
+	fn from(other: &[f64; 3]) -> Self {
+		let &[x, y, z] = other;
+		Self::from_xyz_mm(x, y, z)
+	}
+}
+
+impl From<(f64, f64, f64)> for msg::EgmCartesianSpeed {
+	fn from(other: (f64, f64, f64)) -> Self {
+		let (x, y, z) = other;
+		Self::from_xyz_mm(x, y, z)
+	}
+}
+
 impl msg::EgmJoints {
 	/// Create a new joint list from a vector of joint values in degrees.
 	pub fn from_degrees(joints: impl Into<Vec<f64>>) -> Self {
@@ -324,6 +353,13 @@ impl From<&[f64]> for msg::EgmJoints {
 	/// Create a new joint list from a slice of joint values in degrees.
 	fn from(other: &[f64]) -> Self {
 		Self::from_degrees(other)
+	}
+}
+
+impl From<[f64; 6]> for msg::EgmJoints {
+	/// Create a new joint list from an array of joint values in degrees.
+	fn from(other: [f64; 6]) -> Self {
+		Self::from_degrees(&other[..])
 	}
 }
 

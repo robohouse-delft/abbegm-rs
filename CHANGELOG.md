@@ -1,3 +1,6 @@
+v0.3.1
+  * Add `has_nan()` to check for NaN values in messages.
+
 v0.3.0
   * Remove angular velocity from `EgmCartesianSpeed` constructor.
   * Add a few more `From<...>` implementations.

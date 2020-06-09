@@ -103,6 +103,11 @@ impl msg::EgmCartesian {
 	pub fn as_mm(&self) -> [f64; 3] {
 		[self.x, self.y, self.z]
 	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
+	}
 }
 
 impl From<[f64; 3]> for msg::EgmCartesian {
@@ -144,6 +149,11 @@ impl msg::EgmQuaternion {
 	pub fn as_wxyz(&self) -> [f64; 4] {
 		[self.u0, self.u1, self.u2, self.u3]
 	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.u0.is_nan() || self.u1.is_nan() || self.u2.is_nan() || self.u3.is_nan()
+	}
 }
 
 impl msg::EgmEuler {
@@ -155,6 +165,11 @@ impl msg::EgmEuler {
 	/// Get the rotation as [x, y, z] array in degrees.
 	pub fn as_xyz_degrees(&self) -> [f64; 3] {
 		[self.x, self.y, self.z]
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.x.is_nan() || self.y.is_nan() || self.z.is_nan()
 	}
 }
 
@@ -287,23 +302,13 @@ impl msg::EgmPose {
 			euler: None,
 		}
 	}
-}
 
-impl msg::EgmSpeedRef {
-	pub fn joints(joints: impl Into<msg::EgmJoints>) -> Self {
-		Self {
-			joints: Some(joints.into()),
-			external_joints: None,
-			cartesians: None,
-		}
-	}
-
-	pub fn cartesian(cartesian: impl Into<msg::EgmCartesianSpeed>) -> Self {
-		Self {
-			cartesians: Some(cartesian.into()),
-			joints: None,
-			external_joints: None,
-		}
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.pos.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.orient.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.euler.as_ref().map(|x| x.has_nan()).unwrap_or(false)
 	}
 }
 
@@ -311,6 +316,11 @@ impl msg::EgmCartesianSpeed {
 	/// Create a cartesian speed from linear velocity in mm/s.
 	pub fn from_xyz_mm(x: f64, y: f64, z: f64) -> Self {
 		Self { value: vec![x, y, z] }
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.value.iter().find(|x| x.is_nan()).is_some()
 	}
 }
 
@@ -339,6 +349,11 @@ impl msg::EgmJoints {
 	/// Create a new joint list from a vector of joint values in degrees.
 	pub fn from_degrees(joints: impl Into<Vec<f64>>) -> Self {
 		Self { joints: joints.into() }
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.joints.iter().find(|x| x.is_nan()).is_some()
 	}
 }
 
@@ -374,6 +389,11 @@ impl msg::EgmExternalJoints {
 	/// Create a new external joint list from a vector of joint values in degrees.
 	pub fn from_degrees(joints: impl Into<Vec<f64>>) -> Self {
 		Self { joints: joints.into() }
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.joints.iter().find(|x| x.is_nan()).is_some()
 	}
 }
 
@@ -411,6 +431,40 @@ impl msg::EgmPlanned {
 			external_joints: None,
 		}
 	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+	}
+}
+
+impl msg::EgmSpeedRef {
+	pub fn joints(joints: impl Into<msg::EgmJoints>) -> Self {
+		Self {
+			joints: Some(joints.into()),
+			external_joints: None,
+			cartesians: None,
+		}
+	}
+
+	pub fn cartesian(cartesian: impl Into<msg::EgmCartesianSpeed>) -> Self {
+		Self {
+			cartesians: Some(cartesian.into()),
+			joints: None,
+			external_joints: None,
+		}
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.cartesians.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+	}
 }
 
 impl msg::EgmPathCorr {
@@ -420,6 +474,11 @@ impl msg::EgmPathCorr {
 			pos: position.into(),
 			age: age_ms,
 		}
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.pos.has_nan()
 	}
 }
 
@@ -471,6 +530,13 @@ impl msg::EgmSensor {
 			speed_ref: Some(msg::EgmSpeedRef::cartesian(speed)),
 		}
 	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.speed_ref.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+	}
 }
 
 impl msg::EgmSensorPathCorr {
@@ -480,6 +546,29 @@ impl msg::EgmSensorPathCorr {
 			header: Some(msg::EgmHeader::path_correction(sequence_number, timestamp_ms)),
 			path_corr: Some(msg::EgmPathCorr::new(correction, age_ms)),
 		}
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.path_corr.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+	}
+}
+
+impl msg::EgmFeedBack {
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+	}
+}
+
+impl msg::EgmMeasuredForce {
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		self.force.iter().find(|x| x.is_nan()).is_some()
 	}
 }
 
@@ -548,6 +637,15 @@ impl msg::EgmRobot {
 
 	pub fn measured_force(&self) -> Option<&Vec<f64>> {
 		Some(&self.measured_force.as_ref()?.force)
+	}
+
+	/// Check if any of the values are NaN.
+	pub fn has_nan(&self) -> bool {
+		false
+		|| self.feed_back.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.measured_force.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		|| self.utilization_rate.as_ref().map(|x| x.is_nan()).unwrap_or(false)
 	}
 }
 

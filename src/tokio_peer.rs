@@ -4,10 +4,11 @@ use prost::Message;
 use tokio::net::udp;
 use tokio::net::UdpSocket;
 
-use crate::msg::EgmRobot;
-use crate::msg::EgmSensor;
+use crate::InvalidMessageError;
 use crate::ReceiveError;
 use crate::SendError;
+use crate::msg::EgmRobot;
+use crate::msg::EgmSensor;
 
 #[derive(Debug)]
 /// Asynchronous EGM peer capable of sending and receiving messages.
@@ -104,6 +105,7 @@ impl EgmPeer {
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.socket.send(&buffer).await?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
@@ -112,6 +114,7 @@ impl EgmPeer {
 
 	/// Send a message to the specified address.
 	pub async fn send_to(&mut self, msg: &EgmSensor, target: &SocketAddr) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.socket.send_to(&buffer, target).await?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
@@ -164,6 +167,7 @@ impl EgmSender {
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub async fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.inner.send(&buffer).await?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
@@ -172,6 +176,7 @@ impl EgmSender {
 
 	/// Send a message to the specified address.
 	pub async fn send_to(&mut self, msg: &EgmSensor, target: &SocketAddr) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.inner.send_to(&buffer, target).await?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;

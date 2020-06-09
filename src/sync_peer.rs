@@ -3,10 +3,11 @@ use std::net::SocketAddr;
 use prost::Message;
 use std::net::UdpSocket;
 
-use crate::msg::EgmRobot;
-use crate::msg::EgmSensor;
+use crate::InvalidMessageError;
 use crate::ReceiveError;
 use crate::SendError;
+use crate::msg::EgmRobot;
+use crate::msg::EgmSensor;
 
 #[derive(Debug)]
 /// Blocking EGM peer for sending and receiving messages over UDP.
@@ -69,6 +70,7 @@ impl EgmPeer {
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
 	pub fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.socket.send(&buffer)?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
@@ -77,6 +79,7 @@ impl EgmPeer {
 
 	/// Send a message to the specified address.
 	pub fn send_to(&mut self, msg: &EgmSensor, target: &SocketAddr) -> Result<(), SendError> {
+		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.socket.send_to(&buffer, target)?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;

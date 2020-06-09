@@ -42,6 +42,7 @@ use std::time::Duration;
 
 mod error;
 pub use error::IncompleteTransmissionError;
+pub use error::InvalidMessageError;
 pub use error::ReceiveError;
 pub use error::SendError;
 

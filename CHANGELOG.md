@@ -1,5 +1,6 @@
-v0.3.1
+v0.4.0
   * Add `has_nan()` to check for NaN values in messages.
+  * Check messages for NaN values before sending.
 
 v0.3.0
   * Remove angular velocity from `EgmCartesianSpeed` constructor.

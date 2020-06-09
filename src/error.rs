@@ -26,9 +26,28 @@ pub enum ReceiveError {
 /// Error that may occur when sending a message.
 #[derive(Debug)]
 pub enum SendError {
+	InvalidMessage(InvalidMessageError),
 	Io(std::io::Error),
 	Encode(prost::EncodeError),
 	IncompleteTransmission(IncompleteTransmissionError),
+}
+
+/// Error indicating that a message is invalid.
+#[derive(Debug)]
+pub enum InvalidMessageError {
+	/// The message being sent contains one or more NaN values.
+	MessageHasNan,
+}
+
+impl InvalidMessageError {
+	/// Check if an [`msg::EgmSensor`] is invalid.
+	pub fn check_sensor_msg(message: &crate::msg::EgmSensor) -> Result<(), Self> {
+		if message.has_nan() {
+			Err(Self::MessageHasNan)
+		} else {
+			Ok(())
+		}
+	}
 }
 
 /// Error indicating that a message was only partially transmitted.
@@ -50,6 +69,12 @@ impl From<std::io::Error> for ReceiveError {
 impl From<prost::DecodeError> for ReceiveError {
 	fn from(other: prost::DecodeError) -> Self {
 		Self::Decode(other)
+	}
+}
+
+impl From<InvalidMessageError> for SendError {
+	fn from(other: InvalidMessageError) -> Self {
+		Self::InvalidMessage(other)
 	}
 }
 
@@ -83,9 +108,18 @@ impl std::fmt::Display for ReceiveError {
 impl std::fmt::Display for SendError {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		match self {
+			Self::InvalidMessage(e) => e.fmt(f),
 			Self::Io(e) => e.fmt(f),
 			Self::Encode(e) => e.fmt(f),
 			Self::IncompleteTransmission(e) => e.fmt(f),
+		}
+	}
+}
+
+impl std::fmt::Display for InvalidMessageError {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		match self {
+			Self::MessageHasNan => write!(f, "invalid message: message contains one or more NaN values"),
 		}
 	}
 }
@@ -102,4 +136,5 @@ impl std::fmt::Display for IncompleteTransmissionError {
 
 impl std::error::Error for ReceiveError {}
 impl std::error::Error for SendError {}
+impl std::error::Error for InvalidMessageError {}
 impl std::error::Error for IncompleteTransmissionError {}

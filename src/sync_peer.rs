@@ -65,6 +65,35 @@ impl EgmPeer {
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))
 	}
 
+	/// Purge all messages from the socket read queue.
+	///
+	/// Useful to ignore old messages when the socket has been left unpolled for a while.
+	///
+	/// This will leave the socket in blocking mode when the purging is done.
+	pub fn purge_recv_queue(&mut self) -> std::io::Result<()> {
+		self.socket.set_nonblocking(true)?;
+
+		let mut buffer = vec![0u8; 1024];
+		let read_loop_result = loop {
+			match self.socket.recv_from(&mut buffer) {
+				Err(e) => {
+					if e.kind() == std::io::ErrorKind::WouldBlock {
+						break Ok(());
+					} else {
+						break Err(e);
+					}
+				}
+				Ok(_) => (),
+			}
+		};
+
+		// Restore blocking mode, but make sure we return potential errors from the read loop
+		// before errors in restoring blocking mode.
+		let restore_blocking_result = self.socket.set_nonblocking(false);
+		read_loop_result?;
+		restore_blocking_result
+	}
+
 	/// Send a message to the remote address to which the inner socket is connected.
 	///
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].

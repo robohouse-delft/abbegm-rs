@@ -1,3 +1,6 @@
+v0.4.1
+  * Add methods to purge the socket read queue.
+
 v0.4.0
   * Add `has_nan()` to check for NaN values in messages.
   * Check messages for NaN values before sending.

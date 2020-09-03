@@ -100,6 +100,18 @@ impl EgmPeer {
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))
 	}
 
+	/// Purge all messages from the socket read queue.
+	pub async fn purge_read_queue(&mut self) -> std::io::Result<()> {
+		let mut buffer = vec![0; 1024];
+		loop {
+			match poll_once(self.socket.recv_from(&mut buffer)).await {
+				std::task::Poll::Ready(Ok(_)) => (),
+				std::task::Poll::Ready(Err(e)) => return Err(e),
+				std::task::Poll::Pending => return Ok(()),
+			}
+		}
+	}
+
 	/// Send a message to the remote address to which the inner socket is connected.
 	///
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
@@ -149,6 +161,18 @@ impl EgmReceiver {
 		let (bytes_received, sender) = self.inner.recv_from(&mut buffer).await?;
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))
 	}
+
+	/// Purge all messages from the socket read queue.
+	pub async fn purge_read_queue(&mut self) -> std::io::Result<()> {
+		let mut buffer = vec![0; 1024];
+		loop {
+			match poll_once(self.inner.recv_from(&mut buffer)).await {
+				std::task::Poll::Ready(Ok(_)) => (),
+				std::task::Poll::Ready(Err(e)) => return Err(e),
+				std::task::Poll::Pending => return Ok(()),
+			}
+		}
+	}
 }
 
 impl EgmSender {
@@ -182,4 +206,21 @@ impl EgmSender {
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
 		Ok(())
 	}
+}
+
+struct PollOnce<F> {
+	future: F,
+}
+
+impl<F: std::future::Future> std::future::Future for PollOnce<F> {
+	type Output = std::task::Poll<F::Output>;
+
+	fn poll(self: std::pin::Pin<&mut Self>, context: &mut std::task::Context) -> std::task::Poll<Self::Output> {
+		let pin = unsafe { std::pin::Pin::new_unchecked(&mut self.get_unchecked_mut().future) };
+		std::task::Poll::Ready(pin.poll(context))
+	}
+}
+
+async fn poll_once<F: std::future::Future>(future: F) -> std::task::Poll<F::Output> {
+	PollOnce { future }.await
 }

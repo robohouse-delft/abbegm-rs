@@ -83,7 +83,7 @@ impl EgmPeer {
 						break Err(e);
 					}
 				}
-				Ok(_) => (),
+				Ok(_transferred) => (),
 			}
 		};
 

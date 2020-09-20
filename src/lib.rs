@@ -223,10 +223,11 @@ fn test_clock_to_timestampc() {
 
 impl Copy for msg::EgmClock {}
 
-impl std::ops::Add<&Duration> for &msg::EgmClock {
-	type Output = msg::EgmClock;
+impl std::ops::Add<Duration> for msg::EgmClock {
+	type Output = Self;
 
-	fn add(self, right: &Duration) -> Self::Output {
+	#[allow(clippy::suspicious_arithmetic_impl)]
+	fn add(self, right: Duration) -> Self::Output {
 		let usec = self.usec + u64::from(right.subsec_micros());
 		msg::EgmClock {
 			sec: self.sec + right.as_secs() + usec / 1_000_000,
@@ -235,27 +236,27 @@ impl std::ops::Add<&Duration> for &msg::EgmClock {
 	}
 }
 
-impl std::ops::Add<&msg::EgmClock> for &Duration {
-	type Output = msg::EgmClock;
-
-	fn add(self, right: &msg::EgmClock) -> Self::Output {
-		right + self
-	}
-}
-
-impl std::ops::Add<Duration> for msg::EgmClock {
-	type Output = Self;
-
-	fn add(self, right: Duration) -> Self::Output {
-		&self + &right
-	}
-}
-
 impl std::ops::Add<msg::EgmClock> for Duration {
 	type Output = msg::EgmClock;
 
 	fn add(self, right: msg::EgmClock) -> Self::Output {
-		&self + &right
+		right + self
+	}
+}
+
+impl std::ops::Add<&Duration> for &msg::EgmClock {
+	type Output = msg::EgmClock;
+
+	fn add(self, right: &Duration) -> Self::Output {
+		*self + *right
+	}
+}
+
+impl std::ops::Add<&msg::EgmClock> for &Duration {
+	type Output = msg::EgmClock;
+
+	fn add(self, right: &msg::EgmClock) -> Self::Output {
+		*self + *right
 	}
 }
 
@@ -306,10 +307,11 @@ impl msg::EgmPose {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.pos.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.orient.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.euler.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.pos.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.orient.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.euler.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 
@@ -321,7 +323,7 @@ impl msg::EgmCartesianSpeed {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		self.value.iter().find(|x| x.is_nan()).is_some()
+		self.value.iter().any(|x| x.is_nan())
 	}
 }
 
@@ -354,7 +356,7 @@ impl msg::EgmJoints {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		self.joints.iter().find(|x| x.is_nan()).is_some()
+		self.joints.iter().any(|x| x.is_nan())
 	}
 }
 
@@ -394,7 +396,7 @@ impl msg::EgmExternalJoints {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		self.joints.iter().find(|x| x.is_nan()).is_some()
+		self.joints.iter().any(|x| x.is_nan())
 	}
 }
 
@@ -435,10 +437,11 @@ impl msg::EgmPlanned {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 
@@ -461,10 +464,11 @@ impl msg::EgmSpeedRef {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.cartesians.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.cartesians.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 
@@ -534,9 +538,10 @@ impl msg::EgmSensor {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.speed_ref.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.speed_ref.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 
@@ -558,18 +563,18 @@ impl msg::EgmSensorPathCorr {
 impl msg::EgmFeedBack {
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.cartesian.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.external_joints.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 
 impl msg::EgmMeasuredForce {
-
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		self.force.iter().find(|x| x.is_nan()).is_some()
+		self.force.iter().any(|x| x.is_nan())
 	}
 }
 
@@ -595,7 +600,7 @@ impl msg::EgmRobot {
 	}
 
 	pub fn feedback_time(&self) -> Option<msg::EgmClock> {
-		self.feed_back.as_ref()?.time.clone()
+		self.feed_back.as_ref()?.time
 	}
 
 	pub fn planned_joints(&self) -> Option<&Vec<f64>> {
@@ -611,7 +616,7 @@ impl msg::EgmRobot {
 	}
 
 	pub fn planned_time(&self) -> Option<msg::EgmClock> {
-		self.planned.as_ref()?.time.clone()
+		self.planned.as_ref()?.time
 	}
 
 	pub fn motors_enabled(&self) -> Option<bool> {
@@ -642,11 +647,12 @@ impl msg::EgmRobot {
 
 	/// Check if any of the values are NaN.
 	pub fn has_nan(&self) -> bool {
-		false
-		|| self.feed_back.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.measured_force.as_ref().map(|x| x.has_nan()).unwrap_or(false)
-		|| self.utilization_rate.as_ref().map(|x| x.is_nan()).unwrap_or(false)
+		let has_nan = false;
+		let has_nan = has_nan || self.feed_back.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.planned.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.measured_force.as_ref().map(|x| x.has_nan()).unwrap_or(false);
+		let has_nan = has_nan || self.utilization_rate.as_ref().map(|x| x.is_nan()).unwrap_or(false);
+		has_nan
 	}
 }
 

@@ -95,12 +95,12 @@ impl msg::EgmHeader {
 }
 
 impl msg::EgmCartesian {
-	/// Create a cartesian position from x, y and z components in millemeters.
+	/// Create a cartesian position from x, y and z components in millimeters.
 	pub fn from_mm(x: f64, y: f64, z: f64) -> Self {
 		Self { x, y, z }
 	}
 
-	/// Get the cartesion position as [x, y, z] array in millimeters.
+	/// Get the cartesian position as [x, y, z] array in millimeters.
 	pub fn as_mm(&self) -> [f64; 3] {
 		[self.x, self.y, self.z]
 	}
@@ -112,7 +112,7 @@ impl msg::EgmCartesian {
 }
 
 impl From<[f64; 3]> for msg::EgmCartesian {
-	/// Create a cartesian position from x, y and z components in millemeters.
+	/// Create a cartesian position from x, y and z components in millimeters.
 	fn from(other: [f64; 3]) -> Self {
 		let [x, y, z] = other;
 		Self::from_mm(x, y, z)
@@ -120,7 +120,7 @@ impl From<[f64; 3]> for msg::EgmCartesian {
 }
 
 impl From<&[f64; 3]> for msg::EgmCartesian {
-	/// Create a cartesian position from x, y and z components in millemeters.
+	/// Create a cartesian position from x, y and z components in millimeters.
 	fn from(other: &[f64; 3]) -> Self {
 		let &[x, y, z] = other;
 		Self::from_mm(x, y, z)
@@ -128,7 +128,7 @@ impl From<&[f64; 3]> for msg::EgmCartesian {
 }
 
 impl From<(f64, f64, f64)> for msg::EgmCartesian {
-	/// Create a cartesian position from x, y and z components in millemeters.
+	/// Create a cartesian position from x, y and z components in millimeters.
 	fn from(other: (f64, f64, f64)) -> Self {
 		let (x, y, z) = other;
 		Self::from_mm(x, y, z)

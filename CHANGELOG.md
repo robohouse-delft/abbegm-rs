@@ -1,3 +1,6 @@
+v0.4.2
+  * Accept nalgebra 0.21 and 0.22.
+
 v0.4.1
   * Add methods to purge the socket read queue.
 

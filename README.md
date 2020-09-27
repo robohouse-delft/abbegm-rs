@@ -51,8 +51,9 @@ The available features are:
 
 The Rust code for the protobuf messages are generated using [`prost`](https://crates.io/crates/prost).
 Normal users do not need to worry about this, but during development it may be necessary to re-generate the messages.
-To do so, run the following command:
+To do so, go into the `generate` folder and run the program:
 
 ```sh
-cargo run --features generate-rust --bin generate-rust
+cd "generate"
+cargo run
 ```

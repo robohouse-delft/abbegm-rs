@@ -1,7 +1,6 @@
 use std::net::SocketAddr;
 
 use prost::Message;
-use tokio::net::udp;
 use tokio::net::UdpSocket;
 
 use crate::InvalidMessageError;
@@ -14,18 +13,6 @@ use crate::msg::EgmSensor;
 /// Asynchronous EGM peer capable of sending and receiving messages.
 pub struct EgmPeer {
 	socket: UdpSocket,
-}
-
-#[derive(Debug)]
-/// Receiving half of an [`EgmPeer`].
-pub struct EgmReceiver {
-	inner: udp::RecvHalf,
-}
-
-#[derive(Debug)]
-/// Sending half of an [`EgmPeer`].
-pub struct EgmSender {
-	inner: udp::SendHalf,
 }
 
 impl EgmPeer {
@@ -75,33 +62,25 @@ impl EgmPeer {
 		self.socket
 	}
 
-	/// Split the peer into a receiver and a sender.
-	///
-	/// This can be useful if you want to split receiving and sending into separate tasks.
-	pub fn split(self) -> (EgmReceiver, EgmSender) {
-		let (rx, tx) = self.socket.split();
-		(EgmReceiver::new(rx), EgmSender::new(tx))
-	}
-
 	/// Receive a message from the remote address to which the inner socket is connected.
 	///
 	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
 	/// If the peer was created with an unconnected socket, this function will panic.
-	pub async fn recv(&mut self) -> Result<EgmRobot, ReceiveError> {
+	pub async fn recv(&self) -> Result<EgmRobot, ReceiveError> {
 		let mut buffer = vec![0u8; 1024];
 		let bytes_received = self.socket.recv(&mut buffer).await?;
 		Ok(EgmRobot::decode(&buffer[..bytes_received])?)
 	}
 
 	/// Receive a message from any remote address.
-	pub async fn recv_from(&mut self) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
+	pub async fn recv_from(&self) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
 		let mut buffer = vec![0u8; 1024];
 		let (bytes_received, sender) = self.socket.recv_from(&mut buffer).await?;
 		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))
 	}
 
 	/// Purge all messages from the socket read queue.
-	pub async fn purge_read_queue(&mut self) -> std::io::Result<()> {
+	pub async fn purge_read_queue(&self) -> std::io::Result<()> {
 		let mut buffer = vec![0; 1024];
 		loop {
 			match poll_once(self.socket.recv_from(&mut buffer)).await {
@@ -129,80 +108,6 @@ impl EgmPeer {
 		InvalidMessageError::check_sensor_msg(msg)?;
 		let buffer = crate::encode_to_vec(msg)?;
 		let bytes_sent = self.socket.send_to(&buffer, target).await?;
-		crate::error::check_transfer(bytes_sent, buffer.len())?;
-		Ok(())
-	}
-}
-
-impl EgmReceiver {
-	/// Create an EGM receiver from the receive half of a UDP socket.
-	pub fn new(inner: udp::RecvHalf) -> Self {
-		Self { inner }
-	}
-
-	/// Consume self and return the original half of the UDP socket.
-	pub fn into_inner(self) -> udp::RecvHalf {
-		self.inner
-	}
-
-	/// Receive a message from the remote address to which the inner socket is connected.
-	///
-	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
-	/// If the peer was created with an unconnected socket, this function will panic.
-	pub async fn recv(&mut self) -> Result<EgmRobot, ReceiveError> {
-		let mut buffer = vec![0u8; 1024];
-		let bytes_received = self.inner.recv(&mut buffer).await?;
-		Ok(EgmRobot::decode(&buffer[..bytes_received])?)
-	}
-
-	/// Receive a message from any remote address.
-	pub async fn recv_from(&mut self) -> Result<(EgmRobot, SocketAddr), ReceiveError> {
-		let mut buffer = vec![0u8; 1024];
-		let (bytes_received, sender) = self.inner.recv_from(&mut buffer).await?;
-		Ok((EgmRobot::decode(&buffer[..bytes_received])?, sender))
-	}
-
-	/// Purge all messages from the socket read queue.
-	pub async fn purge_read_queue(&mut self) -> std::io::Result<()> {
-		let mut buffer = vec![0; 1024];
-		loop {
-			match poll_once(self.inner.recv_from(&mut buffer)).await {
-				std::task::Poll::Ready(Ok(_)) => (),
-				std::task::Poll::Ready(Err(e)) => return Err(e),
-				std::task::Poll::Pending => return Ok(()),
-			}
-		}
-	}
-}
-
-impl EgmSender {
-	/// Create an EGM sender from the send half of a UDP socket.
-	pub fn new(inner: udp::SendHalf) -> Self {
-		Self { inner }
-	}
-
-	/// Consume self and return the original half of the UDP socket.
-	pub fn into_inner(self) -> udp::SendHalf {
-		self.inner
-	}
-
-	/// Send a message to the remote address to which the inner socket is connected.
-	///
-	/// To use this function, you must pass an already connected socket to [`EgmPeer::new`].
-	/// If the peer was created with an unconnected socket, this function will panic.
-	pub async fn send(&mut self, msg: &EgmSensor) -> Result<(), SendError> {
-		InvalidMessageError::check_sensor_msg(msg)?;
-		let buffer = crate::encode_to_vec(msg)?;
-		let bytes_sent = self.inner.send(&buffer).await?;
-		crate::error::check_transfer(bytes_sent, buffer.len())?;
-		Ok(())
-	}
-
-	/// Send a message to the specified address.
-	pub async fn send_to(&mut self, msg: &EgmSensor, target: &SocketAddr) -> Result<(), SendError> {
-		InvalidMessageError::check_sensor_msg(msg)?;
-		let buffer = crate::encode_to_vec(msg)?;
-		let bytes_sent = self.inner.send_to(&buffer, target).await?;
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
 		Ok(())
 	}

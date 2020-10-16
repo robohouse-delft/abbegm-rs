@@ -1,3 +1,8 @@
+v0.5.0
+  * Update to tokio 0.3.0.
+  * Make `Peer::send/recv` functions take non-mutable `&self`.
+  * Remove `Peer::split()` since you can now use shared references to send/recv.
+
 v0.4.2
   * Accept nalgebra 0.21 and 0.22.
 

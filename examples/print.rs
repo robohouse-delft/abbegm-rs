@@ -15,7 +15,7 @@ struct Options {
 }
 
 async fn do_main(options: Options) -> Result<(), String> {
-	let mut peer = EgmPeer::bind(&options.bind).await
+	let peer = EgmPeer::bind(&options.bind).await
 		.map_err(|e| format!("failed to bind to local enpoint {}: {}", options.bind, e))?;
 
 	let local_address = peer.socket().local_addr()

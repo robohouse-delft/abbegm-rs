@@ -44,7 +44,27 @@ impl From<&nalgebra::Vector3<f64>> for msg::EgmCartesian {
 	}
 }
 
+impl TryFrom<&msg::EgmCartesianSpeed> for nalgebra::Vector3<f64> {
+	type Error = TryFromEgmCartesianSpeedError;
+
+	fn try_from(other: &msg::EgmCartesianSpeed) -> Result<Self, Self::Error> {
+		if other.value.len() == 3 {
+			Ok(Self::new(other.value[0], other.value[1], other.value[2]))
+		} else {
+			Err(TryFromEgmCartesianSpeedError::WrongNumberOfValues(other.value.len()))
+		}
+	}
+}
+
+impl From<&nalgebra::Vector3<f64>> for msg::EgmCartesianSpeed {
+	fn from(other: &nalgebra::Vector3<f64>) -> Self {
+		Self::from_xyz_mm(other.x, other.y, other.z)
+	}
+}
+
 impl_bidi_through_ref!(From, msg::EgmCartesian, nalgebra::Vector3<f64>);
+impl_through_ref!(From<nalgebra::Vector3<f64>> for msg::EgmCartesianSpeed);
+impl_through_ref!(TryFrom<msg::EgmCartesianSpeed> for nalgebra::Vector3<f64>);
 
 // Quaternion
 
@@ -120,9 +140,22 @@ impl_through_ref!(From<nalgebra::Isometry3<f64>> for msg::EgmPose);
 impl_through_ref!(TryFrom<msg::EgmPose> for nalgebra::Isometry3<f64>);
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TryFromEgmCartesianSpeedError {
+	WrongNumberOfValues(usize),
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TryFromEgmPoseError {
 	MissingPosition,
 	MissingOrientation,
+}
+
+impl std::fmt::Display for TryFromEgmCartesianSpeedError {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		match self {
+			Self::WrongNumberOfValues(x) => write!(f, "wrong number of values, expected 3, got {}", x),
+		}
+	}
 }
 
 impl std::fmt::Display for TryFromEgmPoseError {
@@ -134,4 +167,5 @@ impl std::fmt::Display for TryFromEgmPoseError {
 	}
 }
 
+impl std::error::Error for TryFromEgmCartesianSpeedError {}
 impl std::error::Error for TryFromEgmPoseError {}

@@ -20,14 +20,14 @@ edition = "2018"
 default = ["nalgebra", "tokio"]
 
 [dependencies]
-nalgebra = { version = ">=0.21.0, <0.23", optional = true }
-prost = "0.6.1"
-tokio = { version = "0.3.0", optional = true, features = ["net"] }
+nalgebra = { version = ">=0.21.0, <0.30", optional = true }
+prost = "0.8.0"
+tokio = { version = "1.11.0", optional = true, features = ["net"] }
 
 [dev-dependencies]
 assert2 = "0.3.2"
 structopt = "0.3.0"
-tokio = { version = "0.3.0", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.11.0", features = ["rt-multi-thread", "macros"] }
 log = "0.4.11"
-env_logger = "0.8.0"
-rand = "0.7.3"
+env_logger = "0.9.0"
+rand = "0.8.4"

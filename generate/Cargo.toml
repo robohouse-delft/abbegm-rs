@@ -5,4 +5,4 @@ authors = ["Maarten de Vries <maarten@de-vri.es>"]
 edition = "2018"
 
 [dependencies]
-prost-build = "0.6.1"
+prost-build = "0.8.0"

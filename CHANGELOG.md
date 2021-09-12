@@ -1,6 +1,7 @@
 v0.6.0
   * Update to tokio 1.11.0.
   * Update to prost 0.8.0.
+  * Disable nalgebra feature by default.
 
 v0.5.0
   * Update to tokio 0.3.0.

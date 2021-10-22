@@ -43,6 +43,7 @@ impl EgmPeer {
 	/// so you can only use [`EgmPeer::recv_from`] and [`EgmPeer::send_to`].
 	pub fn bind_sync(addrs: impl std::net::ToSocketAddrs) -> std::io::Result<Self> {
 		let socket = std::net::UdpSocket::bind(addrs)?;
+		socket.set_nonblocking(true)?;
 		let socket = tokio::net::UdpSocket::from_std(socket)?;
 		Ok(Self::new(socket))
 	}

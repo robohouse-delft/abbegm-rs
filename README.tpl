@@ -6,6 +6,9 @@
 
 {{readme}}
 
+[`sync_peer::EgmPeer`]: https://docs.rs/abbegm/latest/abbegm/sync_peer/struct.EgmPeer.html
+[`tokio_peer::EgmPeer`]: https://docs.rs/abbegm/latest/abbegm/tokio_peer/struct.EgmPeer.html
+
 ## Re-generating protobuf messages.
 
 The Rust code for the protobuf messages are generated using [`prost`](https://crates.io/crates/prost).

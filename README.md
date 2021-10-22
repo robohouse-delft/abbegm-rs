@@ -12,11 +12,8 @@ In order to use it, the *Externally Guided Motion* option (689-1) must be instal
 EGM can be used to stream positions to a robot controller in either joint space or cartesian space.
 It can also be used to apply corrections to a pre-programmed trajectory.
 
-To communicate with a robot controller in blocking mode, use [`sync_peer::EgmPeer`][sync_peer].
-Use [`tokio_peer::EgmPeer`][tokio_peer] if you want to communicate with a robot controller asynchronously.
-
-[sync_peer]: https://docs.rs/abbegm/latest/abbegm/sync_peer/struct.EgmPeer.html
-[tokio_peer]: https://docs.rs/abbegm/latest/abbegm/tokio_peer/struct.EgmPeer.html
+To communicate with a robot controller in blocking mode, use [`sync_peer::EgmPeer`].
+Use [`tokio_peer::EgmPeer`] if you want to communicate with a robot controller asynchronously.
 
 ## Warning
 Industrial robots are dangerous machines.
@@ -46,6 +43,9 @@ abbegm = { version = "...", default-features = false, features = ["nalgebra"] }
 The available features are:
   * `tokio`: enable the asynchronous peer.
   * `nalgebra`: implement conversions between `nalgebra` types and EGM messages.
+
+[`sync_peer::EgmPeer`]: https://docs.rs/abbegm/latest/abbegm/sync_peer/struct.EgmPeer.html
+[`tokio_peer::EgmPeer`]: https://docs.rs/abbegm/latest/abbegm/tokio_peer/struct.EgmPeer.html
 
 ## Re-generating protobuf messages.
 

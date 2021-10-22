@@ -1,3 +1,6 @@
+main
+  * Update to prost `0.9.0`.
+
 v0.7.0
   * Fix `tokio_peer::EgmPeer::bind_sync()` to set non-blocking mode on the created socket.
   * Make `tokio_peer::EgmPeer::purge_read_queue()` synchronous.

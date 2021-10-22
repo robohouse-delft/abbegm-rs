@@ -1,5 +1,6 @@
 main
   * Fix `tokio_peer::EgmPeer::bind_sync()` to set non-blocking mode on the created socket.
+  * Make `tokio_peer::EgmPeer::purge_read_queue()` synchronous.
 
 v0.6.0
   * Update to tokio 1.11.0.

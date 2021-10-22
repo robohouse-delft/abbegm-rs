@@ -81,13 +81,16 @@ impl EgmPeer {
 	}
 
 	/// Purge all messages from the socket read queue.
-	pub async fn purge_read_queue(&self) -> std::io::Result<()> {
+	pub fn purge_read_queue(&self) -> std::io::Result<()> {
 		let mut buffer = vec![0; 1024];
 		loop {
-			match poll_once(self.socket.recv_from(&mut buffer)).await {
-				std::task::Poll::Ready(Ok(_)) => (),
-				std::task::Poll::Ready(Err(e)) => return Err(e),
-				std::task::Poll::Pending => return Ok(()),
+			match self.socket.try_recv_from(&mut buffer) {
+				Ok((0, _)) => return Ok(()),
+				Ok(_) => continue,
+				Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+					return Ok(());
+				},
+				Err(e) => return Err(e),
 			}
 		}
 	}
@@ -112,21 +115,4 @@ impl EgmPeer {
 		crate::error::check_transfer(bytes_sent, buffer.len())?;
 		Ok(())
 	}
-}
-
-struct PollOnce<F> {
-	future: F,
-}
-
-impl<F: std::future::Future> std::future::Future for PollOnce<F> {
-	type Output = std::task::Poll<F::Output>;
-
-	fn poll(self: std::pin::Pin<&mut Self>, context: &mut std::task::Context) -> std::task::Poll<Self::Output> {
-		let pin = unsafe { std::pin::Pin::new_unchecked(&mut self.get_unchecked_mut().future) };
-		std::task::Poll::Ready(pin.poll(context))
-	}
-}
-
-async fn poll_once<F: std::future::Future>(future: F) -> std::task::Poll<F::Output> {
-	PollOnce { future }.await
 }

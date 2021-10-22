@@ -1,4 +1,4 @@
-main
+v0.7.1
   * Update to prost `0.9.0`.
 
 v0.7.0

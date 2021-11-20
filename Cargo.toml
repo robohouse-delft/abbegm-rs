@@ -1,6 +1,6 @@
 [package]
 name = "abbegm"
-version = "0.6.0"
+version = "0.6.1"
 license = "BSD-2-Clause OR Apache-2.0"
 authors = [
 	"Maarten de Vries <maarten@de-vri.es>",

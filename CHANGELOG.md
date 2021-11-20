@@ -1,4 +1,4 @@
-main
+v0.6.1
   * Dual license as BSD-2-Clause and Apache-2.0.
 
 v0.6.0

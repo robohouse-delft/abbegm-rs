@@ -1,3 +1,6 @@
+main
+  * Dual license as BSD-2-Clause and Apache-2.0.
+
 v0.6.0
   * Update to tokio 1.11.0.
   * Update to prost 0.8.0.

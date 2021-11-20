@@ -1,3 +1,6 @@
+main
+  * Dual license as BSD-2-Clause and Apache-2.0.
+
 v0.7.1
   * Update to prost `0.9.0`.
 

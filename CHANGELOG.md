@@ -1,4 +1,4 @@
-main
+v0.7.4 - 2022-06-08
   * Accept nalgebra versions up to 0.31.
   * Update to prost version 0.10.
 

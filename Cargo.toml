@@ -20,7 +20,7 @@ edition = "2018"
 default = ["tokio"]
 
 [dependencies]
-nalgebra = { version = ">=0.21.0, <0.32", optional = true }
+nalgebra = { version = ">=0.21.0, <0.34", optional = true }
 prost = "0.10.4"
 tokio = { version = "1.11.0", optional = true, features = ["net"] }
 

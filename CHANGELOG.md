@@ -1,35 +1,36 @@
 main:
-  * Accept nalgebra versions up to 0.33.
+  * Accept `nalgebra` versions up to `0.33`.
+  * Update `prost` to version `0.13`.
 
 v0.7.4 - 2022-06-08
-  * Accept nalgebra versions up to 0.31.
-  * Update to prost version 0.10.
+  * Accept `nalgebra` versions up to `0.31`.
+  * Update to `prost` to version `0.10`.
 
 v0.7.3
-  * Accept nalgebra versions up to 0.30.
+  * Accept `nalgebra` versions up to `0.30`.
 
 v0.7.2
   * Dual license as BSD-2-Clause and Apache-2.0.
 
 v0.7.1
-  * Update to prost `0.9.0`.
+  * Update `prost` to version `0.9.0`.
 
 v0.7.0
   * Fix `tokio_peer::EgmPeer::bind_sync()` to set non-blocking mode on the created socket.
   * Make `tokio_peer::EgmPeer::purge_read_queue()` synchronous.
 
 v0.6.0
-  * Update to tokio 1.11.0.
-  * Update to prost 0.8.0.
-  * Disable nalgebra feature by default.
+  * Update `tokio` to version `1.11.0`.
+  * Update `prost` to version `0.8.0`.
+  * Disable `nalgebra` feature by default.
 
 v0.5.0
-  * Update to tokio 0.3.0.
+  * Update `tokio` to version `0.3.0`.
   * Make `Peer::send/recv` functions take non-mutable `&self`.
   * Remove `Peer::split()` since you can now use shared references to send/recv.
 
 v0.4.2
-  * Accept nalgebra 0.21 and 0.22.
+  * Accept `nalgebra` versions `0.21` and `0.22`.
 
 v0.4.1
   * Add methods to purge the socket read queue.

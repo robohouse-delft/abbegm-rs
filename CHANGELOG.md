@@ -1,4 +1,4 @@
-main:
+v0.7.5 - 2024-09-27:
   * Accept `nalgebra` versions up to `0.33`.
   * Update `prost` to version `0.13`.
 

@@ -48,6 +48,9 @@ pub use error::SendError;
 
 mod generated;
 
+#[macro_use]
+mod convert;
+
 /// Generated protobuf messages used by EGM.
 pub mod msg {
 	pub use super::generated::*;
@@ -63,6 +66,10 @@ pub mod tokio_peer;
 /// Conversions to/from nalgebra types.
 #[cfg(feature = "nalgebra")]
 mod nalgebra;
+
+/// Conversions to/from glam types.
+#[cfg(feature = "glam")]
+mod glam;
 
 impl msg::EgmHeader {
 	pub fn new(seqno: u32, timestamp_ms: u32, kind: msg::egm_header::MessageType) -> Self {

@@ -55,22 +55,6 @@ impl From<&glam::DQuat> for msg::EgmQuaternion {
 
 impl_bidi_through_ref!(From, msg::EgmQuaternion, glam::DQuat);
 
-// UnitQuaternion
-
-// impl From<&msg::EgmQuaternion> for glam::UnitQuaternion {
-// 	fn from(other: &msg::EgmQuaternion) -> Self {
-// 		Self::from_quaternion(other.into())
-// 	}
-// }
-
-// impl From<&glam::UnitQuaternion> for msg::EgmQuaternion {
-// 	fn from(other: &glam::UnitQuaternion) -> Self {
-// 		other.as_ref().into()
-// 	}
-// }
-
-// impl_bidi_through_ref!(From, msg::EgmQuaternion, glam::UnitQuaternion);
-
 // Rotation3
 
 impl From<&msg::EgmQuaternion> for glam::DAffine3 {

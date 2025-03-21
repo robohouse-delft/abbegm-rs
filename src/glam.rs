@@ -41,7 +41,7 @@ impl_through_ref!(TryFrom<msg::EgmCartesianSpeed> for glam::DVec3);
 
 // Quaternion
 
-impl From<&msg::EgmQuaternion> for glam::DQuat{
+impl From<&msg::EgmQuaternion> for glam::DQuat {
 	fn from(other: &msg::EgmQuaternion) -> Self {
 		Self::from_xyzw(other.u0, other.u1, other.u2, other.u3)
 	}
